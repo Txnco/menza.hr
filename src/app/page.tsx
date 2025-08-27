@@ -44,7 +44,7 @@ ChartJS.register(ArcElement, Tooltip, Legend)
 
 // Types
 interface MenuItem {
-  id: number
+  id: string
   title: string
   price: string
   allergens: string
@@ -259,7 +259,7 @@ export default function UniversityMenuApp() {
             Object.fromEntries(
               Object.entries(sections as MenuProducts).map(([sectionType, items]) => [
                 sectionType,
-                items?.filter(item => {
+                items?.filter((item: { title: string; allergens: string; price: string; id: string }) => {
                   // Search filter
                   const matchesSearch = !searchQuery ||
                     item.title.toLowerCase().includes(searchQuery.toLowerCase())
@@ -268,7 +268,7 @@ export default function UniversityMenuApp() {
                   const hasRestrictedAllergens = selectedAllergens.size > 0 &&
                     item.allergens &&
                     item.allergens !== '-' &&
-                    item.allergens.split(',').some(allergen =>
+                    item.allergens.split(',').some((allergen: string) =>
                       selectedAllergens.has(allergen.trim().replace('*', ''))
                     )
 
@@ -313,7 +313,7 @@ export default function UniversityMenuApp() {
             if (sectionType === 'vege_menu') {
               vegItems += items.length
             }
-            items.forEach(item => {
+            items.forEach((item: { price: string }) => {
               if (item.price) {
                 totalPrice += parseFloat(item.price)
                 priceCount++
@@ -405,8 +405,8 @@ export default function UniversityMenuApp() {
                       </SelectTrigger>
                       <SelectContent>
                         {restaurants.map(restaurant => (
-                          <SelectItem key={restaurant.value} value={restaurant.value}>
-                            {restaurant.label}
+                          <SelectItem key={restaurant.id} value={restaurant.id.toString()}>
+                            {restaurant.title.rendered}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -515,7 +515,7 @@ export default function UniversityMenuApp() {
                                   <Checkbox
                                     id={`allergen-${code}`}
                                     checked={selectedAllergens.has(code)}
-                                    onCheckedChange={(checked) => {
+                                    onCheckedChange={(checked: any) => {
                                       const newAllergens = new Set(selectedAllergens)
                                       if (checked) {
                                         newAllergens.add(code)
@@ -726,7 +726,7 @@ export default function UniversityMenuApp() {
                                   {sectionNames[sectionType as keyof typeof sectionNames]}
                                 </h4>
                                 <div className="space-y-3">
-                                  {items.map((item) => {
+                                  {items.map((item: MenuItem) => {
                                     const isFavorite = favorites.some(fav => fav.id === item.id)
                                     return (
                                       <div
@@ -794,7 +794,7 @@ export default function UniversityMenuApp() {
                                   {sectionNames[sectionType as keyof typeof sectionNames]}
                                 </h4>
                                 <div className="space-y-3">
-                                  {items.map((item) => {
+                                  {items.map((item: MenuItem) => {
                                     const isFavorite = favorites.some(fav => fav.id === item.id)
                                     return (
                                       <div
@@ -1190,7 +1190,7 @@ function PriceChart({ menuData }: { menuData: Restaurant[] }) {
     menuData.forEach(restaurant => {
       Object.values(restaurant.meta.menu_products).forEach(mealType => {
         Object.values(mealType as MenuProducts).forEach(items => {
-          items?.forEach(item => {
+          items?.forEach((item: { price: string }) => {
             const price = parseFloat(item.price)
             if (price <= 1) ranges['0-1€']++
             else if (price <= 2) ranges['1-2€']++
@@ -1234,7 +1234,7 @@ function CheapestItems({ menuData }: { menuData: Restaurant[] }) {
     menuData.forEach(restaurant => {
       Object.values(restaurant.meta.menu_products).forEach(mealType => {
         Object.values(mealType as MenuProducts).forEach(items => {
-          items?.forEach(item => {
+          items?.forEach((item: MenuItem & { restaurant: string }) => {
             if (item.price) {
               allItems.push({ ...item, restaurant: restaurant.title.rendered })
             }
