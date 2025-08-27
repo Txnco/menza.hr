@@ -481,7 +481,7 @@ export default function UniversityMenuApp() {
                   {/* Date Selection */}
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-muted-foreground">Datum</label>
-                    <div className="flex items-center gap-2 w-full max-w-[200px] sm:max-w-[350px]">
+                    <div className="flex items-center gap-2 w-full max-w-[350px] sm:max-w-[350px]">
                       <Input
                         type="date"
                         value={format(selectedDate, 'yyyy-MM-dd')}
@@ -496,7 +496,7 @@ export default function UniversityMenuApp() {
                     <label className="text-sm font-medium text-muted-foreground">Restoran</label>
 
                     {/* Width cap lives on a wrapper so the Select can stay w-full */}
-                    <div className="w-full max-w-[200px] sm:max-w-[350px]">
+                    <div className="w-full max-w-[350px] sm:max-w-[350px]">
                       <Select value={selectedRestaurant} onValueChange={setSelectedRestaurant}>
                         <SelectTrigger className="w-full truncate">
                           <SelectValue placeholder="Odaberite restoran" />
