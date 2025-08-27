@@ -18,6 +18,11 @@ import {
   Download,
   Trash2,
   Eye,
+  ChefHat,
+  MapPin,
+  Bell,
+  User,
+  Menu,
   BarChart3,
   Settings,
   UtensilsCrossed,
@@ -40,6 +45,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Separator } from '@/components/ui/separator'
 import { Switch } from '@/components/ui/switch'
 import type { MenuItem, FavoriteItem, MealTypes, MenuProducts, Restaurant } from '@/lib/types'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 
 ChartJS.register(ArcElement, Tooltip, Legend)
 
@@ -79,6 +85,7 @@ export default function UniversityMenuApp() {
   const [activeFilters, setActiveFilters] = useState<Set<string>>(new Set())
   const [loading, setLoading] = useState(false)
   const [showWeekView, setShowWeekView] = useState(false)
+  const [showMobileSearch, setShowMobileSearch] = useState(false)
 
   // Settings state
   const [settings, setSettings] = useState({
@@ -305,31 +312,153 @@ export default function UniversityMenuApp() {
   return (
     <div className="min-h-screen bg-stone-50">
       {/* Navigation */}
-      <nav className="bg-white shadow-sm border-b sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center gap-8">
-              <h1 className="text-xl font-semibold flex items-center gap-2">
-                <Image src="/assets/images/Logo_transparent_3.png" alt="No Data" width={50} height={50} className="mx-auto" />
-                Sveučilišni Restorani
-              </h1>
+      <div className="max-w-7xl mx-auto bg-stone-50 px-4  pt-4 ">
+        <header className="w-full bg-white/80 backdrop-blur-xl border border-stone-200/50 rounded-2xl shadow-sm">
+          <div className="flex items-center justify-between h-16 px-2">
+            {/* Logo Section */}
+            <div className="flex items-center gap-3">
+                <Image 
+                  src="/assets/images/Logo_transparent_3.png" 
+                  alt="Logo" 
+                  width={50} 
+                  height={50} 
+                />
+              <div className="hidden sm:block">
+                <h1 className="text-xl font-bold bg-gradient-to-r from-stone-900 to-stone-600 bg-clip-text text-transparent">
+                  Sveučilišni Restorani
+                </h1>
+                <p className="text-xs text-stone-500 -mt-1">Najbolji jelovnici u gradu</p>
+              </div>
             </div>
-            <div className="flex items-center gap-4">
-              {/* {<ThemeToggle />} */}
-              <Button variant="ghost" size="icon" className="relative">
-                <Heart className="h-4 w-4" />
+
+            {/* Center Search - Desktop Only */}
+            <div className="hidden md:flex items-center flex-1 max-w-sm mx-8">
+              <div className="relative w-full group">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-stone-400 group-focus-within:text-stone-600 transition-colors" />
+                <Input
+                  type="text"
+                  placeholder="Pretražite jela..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-10 pr-10 h-10 bg-stone-50/50 border-stone-200/50 focus:bg-white focus:border-stone-400 transition-all duration-200 rounded-xl"
+                />
+                {searchQuery && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 h-6 w-6 hover:bg-stone-200"
+                    onClick={() => setSearchQuery('')}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                )}
+              </div>
+            </div>
+
+            {/* Right Actions */}
+            <div className="flex items-center gap-2">
+              {/* Quick Stats - Desktop Only */}
+              <div className="hidden lg:flex items-center gap-4 mr-4 text-xs text-stone-500">
+                <div className="flex items-center gap-1">
+                  <ChefHat className="h-3 w-3" />
+                  <span>{statistics?.totalItems || 0} jela</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <MapPin className="h-3 w-3" />
+                  <span>{statistics?.restaurantsCount || 0} restorana</span>
+                </div>
+              </div>
+
+              {/* Mobile Search Toggle */}
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="md:hidden h-9 w-9 hover:bg-stone-100"
+                onClick={() => setShowMobileSearch(!showMobileSearch)}
+              >
+                <Search className="h-4 w-4" />
+              </Button>
+
+              {/* Notifications */}
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="relative h-9 w-9 hover:bg-stone-100"
+              >
+                <Bell className="h-4 w-4" />
+                <div className="absolute top-2 right-2 w-2 h-2 bg-blue-500 rounded-full"></div>
+              </Button>
+
+              {/* Favorites */}
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="relative h-9 w-9 hover:bg-stone-100 group"
+              >
+                <Heart className={`h-4 w-4 transition-colors ${favorites.length > 0 ? 'text-red-500 fill-red-500' : 'group-hover:text-red-400'}`} />
                 {favorites.length > 0 && (
-                  <Badge className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center text-xs">
+                  <Badge className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center text-xs bg-red-500 border-2 border-white">
                     {favorites.length}
                   </Badge>
                 )}
               </Button>
+
+              {/* Separator */}
+              <div className="hidden sm:block w-px h-6 bg-stone-200 mx-2"></div>
+
+              {/* User Menu */}
+              <div className="flex items-center gap-2">
+                <Button variant="ghost" size="icon" className="h-9 w-9 hover:bg-stone-100">
+                  <Settings className="h-4 w-4" />
+                </Button>
+                
+                <Avatar className="h-8 w-8 ring-2 ring-transparent hover:ring-stone-300 transition-all cursor-pointer">
+                  <AvatarFallback className="bg-stone-100 text-stone-600 text-sm font-medium">
+                    <User className="h-4 w-4" />
+                  </AvatarFallback>
+                </Avatar>
+              </div>
+
+              {/* Mobile Menu Toggle */}
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="sm:hidden h-9 w-9 hover:bg-stone-100"
+              >
+                <Menu className="h-4 w-4" />
+              </Button>
             </div>
           </div>
-        </div>
-      </nav>
 
-      <div className="max-w-7xl mx-auto px-4 py-6">
+          {/* Mobile Search Bar - Collapsible */}
+          {showMobileSearch && (
+            <div className="md:hidden px-6 pb-4 -mt-1">
+              <div className="relative group">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-stone-400 group-focus-within:text-stone-600 transition-colors" />
+                <Input
+                  type="text"
+                  placeholder="Pretražite jela..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-10 pr-10 h-9 bg-stone-50/50 border-stone-200/50 focus:bg-white focus:border-stone-400 transition-all duration-200 rounded-xl text-sm"
+                />
+                {searchQuery && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 h-6 w-6 hover:bg-stone-200"
+                    onClick={() => setSearchQuery('')}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                )}
+              </div>
+            </div>
+          )}
+        </header>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 py-3">
         <Tabs defaultValue="menu" className="w-full">
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="menu">Jelovnik</TabsTrigger>
@@ -352,8 +481,7 @@ export default function UniversityMenuApp() {
                   {/* Date Selection */}
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-muted-foreground">Datum</label>
-                    <div className="flex items-center gap-2">
-                      <Calendar className="h-4 w-4 text-muted-foreground" />
+                    <div className="flex items-center gap-2 w-full max-w-[200px] sm:max-w-[350px]">
                       <Input
                         type="date"
                         value={format(selectedDate, 'yyyy-MM-dd')}
