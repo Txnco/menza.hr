@@ -380,241 +380,254 @@ export default function UniversityMenuApp() {
           {/* Menu Tab */}
           <TabsContent value="menu" className="space-y-6">
             {/* Controls */}
-            <Card>
-  <CardHeader>
-    <CardTitle>Kontrole jelovnika</CardTitle>
-    <CardDescription>Odaberite datum i restoran za prikaz jelovnika</CardDescription>
-  </CardHeader>
-  <CardContent className="space-y-4">
-    {/* Primary Controls - Always Visible */}
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-      {/* Date Selection */}
-      <div className="space-y-2">
-        <label className="text-sm font-medium text-muted-foreground">Datum</label>
-        <div className="flex items-center gap-2">
-          <Calendar className="h-4 w-4 text-muted-foreground" />
-          <Input
-            type="date"
-            value={format(selectedDate, 'yyyy-MM-dd')}
-            onChange={(e) => setSelectedDate(new Date(e.target.value))}
-            className="flex-1"
-          />
-        </div>
-      </div>
-
-      {/* Restaurant Selection */}
-      <div className="space-y-2">
-        <label className="text-sm font-medium text-muted-foreground">Restoran</label>
-        <Select value={selectedRestaurant} onValueChange={setSelectedRestaurant}>
-          <SelectTrigger>
-            <SelectValue placeholder="Odaberite restoran" />
-          </SelectTrigger>
-          <SelectContent>
-            {restaurants.map(restaurant => (
-              <SelectItem key={restaurant.value} value={restaurant.value}>
-                {restaurant.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-
-      {/* Search */}
-      <div className="space-y-2 md:col-span-2 lg:col-span-1">
-        <label className="text-sm font-medium text-muted-foreground">Pretraživanje</label>
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            type="text"
-            placeholder="Pretražite jela..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 pr-10"
-          />
-          {searchQuery && (
-            <Button
-              variant="ghost"
-              size="icon"
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 h-6 w-6"
-              onClick={() => setSearchQuery('')}
-            >
-              <X className="h-4 w-4" />
-            </Button>
-          )}
-        </div>
-      </div>
-
-      {/* Filters Dropdown */}
-      <div className="space-y-2">
-        <label className="text-sm font-medium text-muted-foreground">Filteri</label>
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button variant="outline" className="w-full justify-between">
-              <span className="flex items-center gap-2">
-                <Filter className="h-4 w-4" />
-                Filteri
-                {(selectedAllergens.size > 0 || activeFilters.size > 0) && (
-                  <Badge variant="secondary" className="ml-1">
-                    {selectedAllergens.size + activeFilters.size}
-                  </Badge>
-                )}
-              </span>
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-80 p-4" align="end">
-            <div className="space-y-4">
-              {/* Quick Filters Header */}
-              <div className="flex items-center justify-between">
-                <h4 className="text-sm font-medium">Brzi filteri</h4>
-                {(selectedAllergens.size > 0 || activeFilters.size > 0) && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => {
-                      setSelectedAllergens(new Set())
-                      setActiveFilters(new Set())
-                    }}
-                    className="text-xs h-7 px-2"
-                  >
-                    <FilterX className="h-3 w-3 mr-1" />
-                    Očisti sve
-                  </Button>
-                )}
-              </div>
-
-              {/* Quick Filter Buttons */}
-              <div className="grid grid-cols-2 gap-2">
-                {[
-                  { key: 'vegetarian', label: '🌱 Vegetarijanski' },
-                  { key: 'price-low', label: '💰 Do 1€' },
-                  { key: 'price-medium', label: '💰💰 1-2€' },
-                  { key: 'popular', label: '🔥 Popularno' }
-                ].map(filter => (
-                  <Button
-                    key={filter.key}
-                    variant={activeFilters.has(filter.key) ? "default" : "outline"}
-                    size="sm"
-                    className="justify-start text-xs h-8"
-                    onClick={() => {
-                      const newFilters = new Set(activeFilters)
-                      if (newFilters.has(filter.key)) {
-                        newFilters.delete(filter.key)
-                      } else {
-                        newFilters.add(filter.key)
-                      }
-                      setActiveFilters(newFilters)
-                    }}
-                  >
-                    {filter.label}
-                  </Button>
-                ))}
-              </div>
-
-              <Separator />
-
-              {/* Allergen Filters */}
-              <div className="space-y-3">
-                <h4 className="text-sm font-medium">Alergeni koje trebate izbjeći</h4>
-                <div className="grid grid-cols-2 gap-2">
-                  {Object.entries(allergenInfo).map(([code, info]) => (
-                    <div key={code} className="flex items-center gap-2">
-                      <Checkbox
-                        id={`allergen-${code}`}
-                        checked={selectedAllergens.has(code)}
-                        onCheckedChange={(checked) => {
-                          const newAllergens = new Set(selectedAllergens)
-                          if (checked) {
-                            newAllergens.add(code)
-                          } else {
-                            newAllergens.delete(code)
-                          }
-                          setSelectedAllergens(newAllergens)
-                        }}
-                      />
-                      <label 
-                        htmlFor={`allergen-${code}`} 
-                        className="flex items-center gap-1 cursor-pointer text-xs"
-                      >
-                        <span className="text-sm">{info.icon}</span>
-                        <span>{info.name}</span>
-                      </label>
-                    </div>
-                  ))}
+           <Card>
+            <CardHeader>
+              <CardTitle>Kontrole jelovnika</CardTitle>
+              <CardDescription>Odaberite datum i restoran za prikaz jelovnika</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {/* Primary Controls - Always Visible */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                {/* Date Selection */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-muted-foreground">Datum</label>
+                  <div className="flex items-center gap-2">
+                    <Calendar className="h-4 w-4 text-muted-foreground" />
+                    <Input
+                      type="date"
+                      value={format(selectedDate, 'yyyy-MM-dd')}
+                      onChange={(e) => setSelectedDate(new Date(e.target.value))}
+                      className="flex-1"
+                    />
+                  </div>
                 </div>
+
+                {/* Restaurant Selection */}
+           <div className="space-y-2">
+              <label className="text-sm font-medium text-muted-foreground">Restoran</label>
+
+              {/* Width cap lives on a wrapper so the Select can stay w-full */}
+              <div className="w-full max-w-[200px] sm:max-w-[350px]">
+                <Select value={selectedRestaurant} onValueChange={setSelectedRestaurant}>
+                  <SelectTrigger className="w-full truncate">
+                    <SelectValue placeholder="Odaberite restoran" />
+                  </SelectTrigger>
+
+                  {/* By default shadcn sets dropdown width = trigger width */}
+                  <SelectContent className="max-w-full">
+                    {restaurants.map((restaurant) => (
+                      <SelectItem
+                        key={restaurant.id}
+                        value={restaurant.id}
+                        // allow wrapping inside the menu; show full text on hover
+                        className="whitespace-normal break-words"
+                        title={restaurant.name}
+                      >
+                        {restaurant.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
-          </PopoverContent>
-        </Popover>
-      </div>
-    </div>
 
-    {/* Secondary Controls */}
-    <div className="flex flex-col sm:flex-row gap-3 pt-2 border-t">
-      {/* Week View Toggle */}
-      <Button 
-        onClick={() => setShowWeekView(!showWeekView)} 
-        variant="outline" 
-        size="sm"
-        className="flex-shrink-0"
-      >
-        {showWeekView ? 'Sakrij' : 'Prikaži'} tjedni pregled
-      </Button>
 
-      {/* Active Filters Summary */}
-      {(selectedAllergens.size > 0 || activeFilters.size > 0) && (
-        <div className="flex flex-wrap gap-1 items-center text-xs text-muted-foreground">
-          <span>Aktivni filteri:</span>
-          {Array.from(activeFilters).map(filter => (
-            <Badge key={filter} variant="secondary" className="text-xs">
-              {filter === 'vegetarian' && '🌱 Vegetarijanski'}
-              {filter === 'price-low' && '💰 Do 1€'}
-              {filter === 'price-medium' && '💰💰 1-2€'}
-              {filter === 'popular' && '🔥 Popularno'}
-            </Badge>
-          ))}
-          {Array.from(selectedAllergens).map(allergen => (
-            <Badge key={allergen} variant="destructive" className="text-xs">
-              {allergenInfo[allergen as keyof typeof allergenInfo]?.icon} {allergenInfo[allergen as keyof typeof allergenInfo]?.name}
-            </Badge>
-          ))}
-        </div>
-      )}
-    </div>
-
-    {/* Weekly Navigation - Collapsible */}
-    {showWeekView && (
-      <motion.div
-        initial={{ opacity: 0, height: 0 }}
-        animate={{ opacity: 1, height: 'auto' }}
-        exit={{ opacity: 0, height: 0 }}
-        transition={{ duration: 0.2 }}
-        className="space-y-2 pt-2 border-t"
-      >
-        <h4 className="text-sm font-medium">Odaberite dan u tjednu:</h4>
-        <div className="flex gap-2 overflow-x-auto py-2">
-          {weekDays.map((day, index) => (
-            <Button
-              key={index}
-              variant={isSameDay(day, selectedDate) ? "default" : "outline"}
-              className={`min-w-28 flex-shrink-0 ${isToday(day) ? 'ring-2 ring-green-500' : ''}`}
-              onClick={() => setSelectedDate(day)}
-              size="sm"
-            >
-              <div className="text-center">
-                <div className="text-xs font-medium">
-                  {format(day, 'EEE', { locale: hr })}
+                {/* Search */}
+                <div className="space-y-2 md:col-span-2 lg:col-span-1">
+                  <label className="text-sm font-medium text-muted-foreground">Pretraživanje</label>
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      type="text"
+                      placeholder="Pretražite jela..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="pl-10 pr-10"
+                    />
+                    {searchQuery && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="absolute right-2 top-1/2 transform -translate-y-1/2 h-6 w-6"
+                        onClick={() => setSearchQuery('')}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
                 </div>
-                <div className="text-xs opacity-70">
-                  {format(day, 'd/M')}
+
+                {/* Filters Dropdown */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-muted-foreground">Filteri</label>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button variant="outline" className="w-full justify-between">
+                        <span className="flex items-center gap-2">
+                          <Filter className="h-4 w-4" />
+                          Filteri
+                          {(selectedAllergens.size > 0 || activeFilters.size > 0) && (
+                            <Badge variant="secondary" className="ml-1">
+                              {selectedAllergens.size + activeFilters.size}
+                            </Badge>
+                          )}
+                        </span>
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-80 p-4" align="end">
+                      <div className="space-y-4">
+                        {/* Quick Filters Header */}
+                        <div className="flex items-center justify-between">
+                          <h4 className="text-sm font-medium">Brzi filteri</h4>
+                          {(selectedAllergens.size > 0 || activeFilters.size > 0) && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => {
+                                setSelectedAllergens(new Set())
+                                setActiveFilters(new Set())
+                              }}
+                              className="text-xs h-7 px-2"
+                            >
+                              <FilterX className="h-3 w-3 mr-1" />
+                              Očisti sve
+                            </Button>
+                          )}
+                        </div>
+
+                        {/* Quick Filter Buttons */}
+                        <div className="grid grid-cols-2 gap-2">
+                          {[
+                            { key: 'vegetarian', label: '🌱 Vegetarijanski' },
+                            { key: 'price-low', label: '💰 Do 1€' },
+                            { key: 'price-medium', label: '💰💰 1-2€' },
+                            { key: 'popular', label: '🔥 Popularno' }
+                          ].map(filter => (
+                            <Button
+                              key={filter.key}
+                              variant={activeFilters.has(filter.key) ? "default" : "outline"}
+                              size="sm"
+                              className="justify-start text-xs h-8"
+                              onClick={() => {
+                                const newFilters = new Set(activeFilters)
+                                if (newFilters.has(filter.key)) {
+                                  newFilters.delete(filter.key)
+                                } else {
+                                  newFilters.add(filter.key)
+                                }
+                                setActiveFilters(newFilters)
+                              }}
+                            >
+                              {filter.label}
+                            </Button>
+                          ))}
+                        </div>
+
+                        <Separator />
+
+                        {/* Allergen Filters */}
+                        <div className="space-y-3">
+                          <h4 className="text-sm font-medium">Alergeni koje trebate izbjeći</h4>
+                          <div className="grid grid-cols-2 gap-2">
+                            {Object.entries(allergenInfo).map(([code, info]) => (
+                              <div key={code} className="flex items-center gap-2">
+                                <Checkbox
+                                  id={`allergen-${code}`}
+                                  checked={selectedAllergens.has(code)}
+                                  onCheckedChange={(checked) => {
+                                    const newAllergens = new Set(selectedAllergens)
+                                    if (checked) {
+                                      newAllergens.add(code)
+                                    } else {
+                                      newAllergens.delete(code)
+                                    }
+                                    setSelectedAllergens(newAllergens)
+                                  }}
+                                />
+                                <label 
+                                  htmlFor={`allergen-${code}`} 
+                                  className="flex items-center gap-1 cursor-pointer text-xs"
+                                >
+                                  <span className="text-sm">{info.icon}</span>
+                                  <span>{info.name}</span>
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </PopoverContent>
+                  </Popover>
                 </div>
               </div>
-            </Button>
-          ))}
-        </div>
-      </motion.div>
-    )}
-  </CardContent>
-</Card>
+
+              {/* Secondary Controls */}
+              <div className="flex flex-col sm:flex-row gap-3 pt-2 border-t">
+                {/* Week View Toggle */}
+                <Button 
+                  onClick={() => setShowWeekView(!showWeekView)} 
+                  variant="outline" 
+                  size="sm"
+                  className="flex-shrink-0"
+                >
+                  {showWeekView ? 'Sakrij' : 'Prikaži'} tjedni pregled
+                </Button>
+
+                {/* Active Filters Summary */}
+                {(selectedAllergens.size > 0 || activeFilters.size > 0) && (
+                  <div className="flex flex-wrap gap-1 items-center text-xs text-muted-foreground">
+                    <span>Aktivni filteri:</span>
+                    {Array.from(activeFilters).map(filter => (
+                      <Badge key={filter} variant="secondary" className="text-xs">
+                        {filter === 'vegetarian' && '🌱 Vegetarijanski'}
+                        {filter === 'price-low' && '💰 Do 1€'}
+                        {filter === 'price-medium' && '💰💰 1-2€'}
+                        {filter === 'popular' && '🔥 Popularno'}
+                      </Badge>
+                    ))}
+                    {Array.from(selectedAllergens).map(allergen => (
+                      <Badge key={allergen} variant="destructive" className="text-xs">
+                        {allergenInfo[allergen as keyof typeof allergenInfo]?.icon} {allergenInfo[allergen as keyof typeof allergenInfo]?.name}
+                      </Badge>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Weekly Navigation - Collapsible */}
+              {showWeekView && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="space-y-2 pt-2 border-t"
+                >
+                  <h4 className="text-sm font-medium">Odaberite dan u tjednu:</h4>
+                  <div className="flex gap-2 overflow-x-auto py-2">
+                    {weekDays.map((day, index) => (
+                      <Button
+                        key={index}
+                        variant={isSameDay(day, selectedDate) ? "default" : "outline"}
+                        className={`min-w-28 flex-shrink-0 ${isToday(day) ? 'ring-2 ring-green-500' : ''}`}
+                        onClick={() => setSelectedDate(day)}
+                        size="sm"
+                      >
+                        <div className="text-center">
+                          <div className="text-xs font-medium">
+                            {format(day, 'EEE', { locale: hr })}
+                          </div>
+                          <div className="text-xs opacity-70">
+                            {format(day, 'd/M')}
+                          </div>
+                        </div>
+                      </Button>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </CardContent>
+          </Card>
 
             {/* Statistics */}
             {menuData.length > 0 && (
