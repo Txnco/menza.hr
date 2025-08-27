@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { format, addDays, startOfWeek, isToday, isSameDay } from 'date-fns'
+import { ThemeToggle } from '@/components/ThemeToggle'
 import Image from 'next/image'
 import { hr } from 'date-fns/locale'
 import { 
@@ -353,7 +354,7 @@ export default function UniversityMenuApp() {
                 size="icon"
                 onClick={() => setIsDarkMode(!isDarkMode)}
               >
-                {isDarkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+                {<ThemeToggle/>}
               </Button>
               <Button variant="ghost" size="icon" className="relative">
                 <Heart className="h-4 w-4" />
