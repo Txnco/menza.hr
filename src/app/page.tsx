@@ -405,18 +405,30 @@ export default function UniversityMenuApp() {
       {/* Restaurant Selection */}
       <div className="space-y-2">
         <label className="text-sm font-medium text-muted-foreground">Restoran</label>
-        <Select value={selectedRestaurant} onValueChange={setSelectedRestaurant}>
-          <SelectTrigger>
-            <SelectValue placeholder="Odaberite restoran" />
-          </SelectTrigger>
-          <SelectContent>
-            {restaurants.map(restaurant => (
-              <SelectItem key={restaurant.value} value={restaurant.value}>
-                {restaurant.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+
+        {/* Width cap lives on a wrapper so the Select can stay w-full */}
+        <div className="w-full max-w-[200px] sm:max-w-[350px]">
+          <Select value={selectedRestaurant} onValueChange={setSelectedRestaurant}>
+            <SelectTrigger className="w-full truncate">
+              <SelectValue placeholder="Odaberite restoran" />
+            </SelectTrigger>
+
+            {/* By default shadcn sets dropdown width = trigger width */}
+            <SelectContent className="max-w-full">
+              {restaurants.map((restaurant) => (
+                <SelectItem
+                  key={restaurant.id}
+                  value={restaurant.id}
+                  // allow wrapping inside the menu; show full text on hover
+                  className="whitespace-normal break-words"
+                  title={restaurant.name}
+                >
+                  {restaurant.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       {/* Search */}
