@@ -844,7 +844,9 @@ export default function UniversityMenuApp() {
               <CardContent>
                 {favorites.length === 0 ? (
                   <div className="text-center py-12 text-muted-foreground">
-                    <div className="text-6xl mb-4">🍽️</div>
+                    <div className="text-6xl mb-4 justify-center flex">
+                      <img src="/assets/images/plate_fork.png" width={108} height={108} alt="" />
+                    </div>
                     <p className="text-lg">Još nemate favorite!</p>
                     <p className="text-sm mt-2">Kliknite na srce pokraj jela da ga dodate u favorite.</p>
                   </div>
